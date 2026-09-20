@@ -9,20 +9,7 @@
 
     <link rel="stylesheet" href="style.css">
 </head>
-<script>
 
-    document
-        .getElementById("logoutButton")
-        .addEventListener("click", function() {
-
-            sessionStorage.removeItem("sudahLogin");
-
-            window.location.href =
-                "login.html";
-
-        });
-
-</script>
 <body>
 
     <script>
@@ -198,6 +185,20 @@
 
     <script src="script.js"></script>
 
+    <script>
+
+    document
+        .getElementById("logoutButton")
+        .addEventListener("click", function() {
+
+            sessionStorage.removeItem("sudahLogin");
+
+            window.location.href =
+                "login.html";
+
+        });
+
+    </script>
 </body>
 
 </html>
