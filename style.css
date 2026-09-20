@@ -1,0 +1,185 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: #222;
+}
+
+
+
+.container {
+    width: 90%;
+    max-width: 650px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+/* tanggal */
+.btn-tanggal {
+    margin-top: 8px;
+    background: #e8e8e8;
+    color: #222;
+    width: 100%;
+}
+
+.btn-tanggal:hover {
+    background: #ddd;
+}
+
+
+/* Judul */
+
+h1 {
+    margin: 0 0 5px;
+}
+
+.subtitle {
+    margin-top: 0;
+    color: #777;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+
+/* Form */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #555;
+}
+
+textarea {
+    height: 90px;
+    resize: vertical;
+}
+
+
+/* Produk */
+
+.produk-item {
+    border: 1px solid #ddd;
+    background: #fafafa;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+
+/* Subtotal */
+
+.subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 15px;
+    padding: 12px;
+
+    background: white;
+    border-radius: 7px;
+}
+
+.subtotal strong {
+    font-size: 16px;
+}
+
+
+/* Tombol */
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 12px 16px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+
+/* Tambah produk */
+
+.btn-tambah {
+    width: 100%;
+    margin-bottom: 20px;
+    background: #e8e8e8;
+}
+
+.btn-tambah:hover {
+    background: #ddd;
+}
+
+
+/* Hapus */
+
+.hapus-produk {
+    margin-top: 12px;
+    background: #ddd;
+}
+
+.hapus-produk:hover {
+    background: #ccc;
+}
+
+
+/* Total */
+
+.total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px;
+    margin: 20px 0;
+
+    background: #f0f0f0;
+    border-radius: 8px;
+
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.total-box strong {
+    font-size: 20px;
+}
+
+
+/* Simpan */
+
+.btn-simpan {
+    width: 100%;
+    background: #222;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-simpan:hover {
+    background: #444;
+}
+

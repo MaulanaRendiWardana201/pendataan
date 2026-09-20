@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pendataan Penjualan</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Pendataan Penjualan</h1>
+        <p class="subtitle">
+            Catat produk yang terjual dan uang yang masuk
+        </p>
+
+        <form id="penjualanForm">
+
+            <!-- Tanggal -->
+            <div class="form-group">
+
+                <label for="tanggal">
+                    Tanggal Transaksi
+                </label>
+
+                <input
+                    type="date"
+                    id="tanggal"
+                    required
+                >
+
+                <button
+                    type="button"
+                    id="tanggalHariIni"
+                    class="btn-tanggal"
+                >
+                    Gunakan Tanggal Hari Ini
+                </button>
+
+            </div>
+
+
+            <!-- Daftar Produk -->
+            <h2>Produk Terjual</h2>
+
+            <div id="produk-container">
+
+                <!-- Produk pertama -->
+                <div class="produk-item">
+
+                    <div class="form-group">
+
+                        <label>Nama Produk</label>
+
+                        <input
+                            type="text"
+                            class="nama-produk"
+                            placeholder="Contoh: Kopi"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Harga Satuan (Rp)</label>
+
+                        <input
+                            type="number"
+                            class="harga-produk"
+                            placeholder="Contoh: 15000"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Jumlah Terjual</label>
+
+                        <input
+                            type="number"
+                            class="jumlah-produk"
+                            placeholder="Contoh: 3"
+                            min="1"
+                            value="1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="subtotal">
+
+                        Subtotal
+
+                        <strong>Rp 0</strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="hapus-produk"
+                    >
+                        Hapus Produk
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Tambah Produk -->
+            <button
+                type="button"
+                id="tambahProduk"
+                class="btn-tambah"
+            >
+                + Tambah Produk
+            </button>
+
+
+            <!-- Total -->
+            <div class="total-box">
+
+                <span>Total Uang Masuk</span>
+
+                <strong id="total">
+                    Rp 0
+                </strong>
+
+            </div>
+
+
+            <!-- Catatan -->
+            <div class="form-group">
+
+                <label for="catatan">
+                    Catatan
+                </label>
+
+                <textarea
+                    id="catatan"
+                    placeholder="Catatan tambahan (opsional)"
+                ></textarea>
+
+            </div>
+
+
+            <!-- Simpan -->
+            <button
+                type="submit"
+                class="btn-simpan"
+            >
+                Simpan Data
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
