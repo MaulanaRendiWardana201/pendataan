@@ -197,7 +197,7 @@ function buatProduk() {
             <input
                 type="text"
                 class="nama-produk"
-                placeholder="Contoh: Kopi"
+                placeholder="masukan nama barang"
                 required
             >
 
@@ -211,7 +211,7 @@ function buatProduk() {
             <input
                 type="number"
                 class="harga-produk"
-                placeholder="Contoh: 15000"
+                placeholder="masukan nominal"
                 min="0"
                 required
             >
