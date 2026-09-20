@@ -431,7 +431,7 @@ document
 
             try {
 
-                // Jeda 2 detik
+                // Jeda 
                 await new Promise(
                     function(resolve) {
 
