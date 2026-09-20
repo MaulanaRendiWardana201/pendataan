@@ -300,18 +300,23 @@ document
 
             event.preventDefault();
 
+            const tombolSimpan =
+                document.querySelector(".btn-simpan");
+
+            // Cegah klik ganda
+            if (tombolSimpan.disabled) {
+                return;
+            }
 
             const tanggal =
                 document.getElementById(
                     "tanggal"
                 ).value;
 
-
             const catatan =
                 document.getElementById(
                     "catatan"
                 ).value;
-
 
             if (!tanggal) {
 
@@ -322,6 +327,137 @@ document
                 return;
 
             }
+
+            const semuaProduk =
+                document.querySelectorAll(
+                    ".produk-item"
+                );
+
+            const produk = [];
+
+            semuaProduk.forEach(
+                function(item) {
+
+                    const nama =
+                        item.querySelector(
+                            ".nama-produk"
+                        ).value;
+
+                    const harga =
+                        Number(
+                            item.querySelector(
+                                ".harga-produk"
+                            ).value
+                        ) || 0;
+
+                    const jumlah =
+                        Number(
+                            item.querySelector(
+                                ".jumlah-produk"
+                            ).value
+                        ) || 0;
+
+                    const total =
+                        harga * jumlah;
+
+                    produk.push({
+
+                        nama: nama,
+                        harga: harga,
+                        jumlah: jumlah,
+                        total: total
+
+                    });
+
+                }
+            );
+
+            const data = {
+
+                tanggal: tanggal,
+                catatan: catatan,
+                produk: produk
+
+            };
+
+            // ========================================
+            // NONAKTIFKAN TOMBOL
+            // ========================================
+
+            tombolSimpan.disabled = true;
+
+            tombolSimpan.textContent =
+                "Menyimpan...";
+
+            try {
+
+                // Jeda 2 detik
+                await new Promise(
+                    function(resolve) {
+                        setTimeout(resolve, 2000);
+                    }
+                );
+
+                const response =
+                    await fetch(
+                        SCRIPT_URL,
+                        {
+                            method: "POST",
+                            body:
+                                JSON.stringify(data)
+                        }
+                    );
+
+                const result =
+                    await response.json();
+
+                if (
+                    result.status ===
+                    "success"
+                ) {
+
+                    alert(
+                        "Data berhasil disimpan!"
+                    );
+
+                    document
+                        .getElementById(
+                            "penjualanForm"
+                        )
+                        .reset();
+
+                    totalElement.textContent =
+                        "Rp 0";
+
+                } else {
+
+                    alert(
+                        "Gagal menyimpan data: " +
+                        result.message
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Terjadi kesalahan saat mengirim data."
+                );
+
+            } finally {
+
+                // Aktifkan kembali tombol
+                tombolSimpan.disabled = false;
+
+                tombolSimpan.textContent =
+                    "Simpan Data";
+
+            }
+
+        }
+    );
 
 
             // ========================================
