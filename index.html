@@ -6,12 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Pendataan Penjualan</title>
+    <button
+    type="button"
+    id="logoutButton"
+    class="btn-tanggal">Keluar</button>
 
     <link rel="stylesheet" href="style.css">
 </head>
+<script>
 
+    document
+        .getElementById("logoutButton")
+        .addEventListener("click", function() {
+
+            sessionStorage.removeItem("sudahLogin");
+
+            window.location.href =
+                "login.html";
+
+        });
+
+</script>
 <body>
 
+    <script>
+
+        if (
+            sessionStorage.getItem("sudahLogin") !== "true"
+        ) {
+            window.location.href = "login.html";
+        }
+
+    </script>
     <div class="container">
 
         <h1>Pendataan Penjualan</h1>
