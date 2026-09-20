@@ -183,3 +183,6 @@ button {
     background: #444;
 }
 
+.login-container {
+    max-width: 450px;
+}
