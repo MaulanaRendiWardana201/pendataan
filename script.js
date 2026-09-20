@@ -19,6 +19,9 @@ const tambahProduk =
 const totalElement =
     document.getElementById("total");
 
+const form =
+    document.getElementById("penjualanForm");
+
 
 // ========================================
 // TANGGAL HARI INI
@@ -82,42 +85,54 @@ function formatRupiah(angka) {
 function hitungTotal() {
 
     const semuaProduk =
-        document.querySelectorAll(".produk-item");
+        document.querySelectorAll(
+            ".produk-item"
+        );
 
     let total = 0;
 
 
-    semuaProduk.forEach(function(produk) {
+    semuaProduk.forEach(
+        function(produk) {
 
-        const harga =
-            Number(
+            const harga =
+                Number(
+                    produk.querySelector(
+                        ".harga-produk"
+                    ).value
+                ) || 0;
+
+
+            const jumlah =
+                Number(
+                    produk.querySelector(
+                        ".jumlah-produk"
+                    ).value
+                ) || 0;
+
+
+            const subtotal =
+                harga * jumlah;
+
+
+            total += subtotal;
+
+
+            const subtotalElement =
                 produk.querySelector(
-                    ".harga-produk"
-                ).value
-            ) || 0;
+                    ".subtotal strong"
+                );
 
 
-        const jumlah =
-            Number(
-                produk.querySelector(
-                    ".jumlah-produk"
-                ).value
-            ) || 0;
+            if (subtotalElement) {
 
+                subtotalElement.textContent =
+                    formatRupiah(subtotal);
 
-        const subtotal =
-            harga * jumlah;
+            }
 
-
-        total += subtotal;
-
-
-        produk.querySelector(
-            ".subtotal strong"
-        ).textContent =
-            formatRupiah(subtotal);
-
-    });
+        }
+    );
 
 
     totalElement.textContent =
@@ -164,6 +179,24 @@ function pasangEvent(produk) {
         "click",
         function() {
 
+            const semuaProduk =
+                document.querySelectorAll(
+                    ".produk-item"
+                );
+
+
+            // Jangan biarkan semua produk terhapus
+            if (semuaProduk.length <= 1) {
+
+                alert(
+                    "Minimal harus ada satu produk."
+                );
+
+                return;
+
+            }
+
+
             produk.remove();
 
             hitungTotal();
@@ -197,7 +230,7 @@ function buatProduk() {
             <input
                 type="text"
                 class="nama-produk"
-                placeholder="masukan nama barang"
+                placeholder="Masukkan nama barang"
                 required
             >
 
@@ -211,7 +244,7 @@ function buatProduk() {
             <input
                 type="number"
                 class="harga-produk"
-                placeholder="masukan nominal"
+                placeholder="Masukkan nominal"
                 min="0"
                 required
             >
@@ -258,6 +291,8 @@ function buatProduk() {
 
     pasangEvent(produk);
 
+    hitungTotal();
+
 }
 
 
@@ -284,247 +319,396 @@ const produkPertama =
         ".produk-item"
     );
 
-pasangEvent(produkPertama);
+
+if (produkPertama) {
+
+    pasangEvent(produkPertama);
+
+}
 
 
 // ========================================
 // SUBMIT FORM
 // ========================================
 
-document
-    .getElementById("penjualanForm")
-    .addEventListener(
-        "submit",
-        async function(event) {
+form.addEventListener(
+    "submit",
+    async function(event) {
 
-            event.preventDefault();
+        event.preventDefault();
 
 
-            // ========================================
-            // CEGAH DOUBLE CLICK
-            // ========================================
+        // ========================================
+        // CEGAH DOUBLE CLICK
+        // ========================================
 
-            const tombolSimpan =
-                document.querySelector(".btn-simpan");
-
-
-            if (tombolSimpan.disabled) {
-
-                return;
-
-            }
+        const tombolSimpan =
+            document.querySelector(
+                ".btn-simpan"
+            );
 
 
-            // ========================================
-            // AMBIL DATA FORM
-            // ========================================
+        if (tombolSimpan.disabled) {
 
-            const tanggal =
-                document.getElementById(
-                    "tanggal"
-                ).value;
+            return;
+
+        }
 
 
-            const catatan =
-                document.getElementById(
-                    "catatan"
-                ).value;
+        // ========================================
+        // AMBIL DATA FORM
+        // ========================================
+
+        const tanggal =
+            tanggalInput.value;
 
 
-            if (!tanggal) {
-
-                alert(
-                    "Silakan pilih tanggal transaksi."
-                );
-
-                return;
-
-            }
+        const catatan =
+            document.getElementById(
+                "catatan"
+            ).value;
 
 
-            // ========================================
-            // AMBIL SEMUA PRODUK
-            // ========================================
+        if (!tanggal) {
 
-            const semuaProduk =
-                document.querySelectorAll(
-                    ".produk-item"
-                );
+            alert(
+                "Silakan pilih tanggal transaksi."
+            );
 
+            return;
 
-            const produk = [];
+        }
 
 
-            semuaProduk.forEach(
-                function(item) {
+        // ========================================
+        // AMBIL SEMUA PRODUK
+        // ========================================
 
-                    const nama =
-                        item.querySelector(
-                            ".nama-produk"
-                        ).value;
-
-
-                    const harga =
-                        Number(
-                            item.querySelector(
-                                ".harga-produk"
-                            ).value
-                        ) || 0;
+        const semuaProduk =
+            document.querySelectorAll(
+                ".produk-item"
+            );
 
 
-                    const jumlah =
-                        Number(
-                            item.querySelector(
-                                ".jumlah-produk"
-                            ).value
-                        ) || 0;
+        const produk = [];
 
 
-                    const total =
-                        harga * jumlah;
+        semuaProduk.forEach(
+            function(item, index) {
+
+                const namaInput =
+                    item.querySelector(
+                        ".nama-produk"
+                    );
+
+                const hargaInput =
+                    item.querySelector(
+                        ".harga-produk"
+                    );
+
+                const jumlahInput =
+                    item.querySelector(
+                        ".jumlah-produk"
+                    );
 
 
-                    produk.push({
+                const nama =
+                    namaInput.value.trim();
 
+
+                const harga =
+                    Number(
+                        hargaInput.value
+                    ) || 0;
+
+
+                const jumlah =
+                    Number(
+                        jumlahInput.value
+                    ) || 0;
+
+
+                const total =
+                    harga * jumlah;
+
+
+                // ========================================
+                // CEK NAMA PRODUK
+                // ========================================
+
+                if (!nama) {
+
+                    alert(
+                        "Nama produk ke-" +
+                        (index + 1) +
+                        " belum diisi."
+                    );
+
+                    namaInput.focus();
+
+                    return;
+
+                }
+
+
+                // ========================================
+                // MASUKKAN DATA PRODUK
+                // ========================================
+
+                produk.push({
+
+                    nama: nama,
+
+                    harga: harga,
+
+                    jumlah: jumlah,
+
+                    total: total
+
+                });
+
+
+                // ========================================
+                // DEBUG
+                // ========================================
+
+                console.log(
+                    "Produk ke-" +
+                    (index + 1) +
+                    ":",
+                    {
                         nama: nama,
-
                         harga: harga,
-
                         jumlah: jumlah,
-
                         total: total
+                    }
+                );
 
-                    });
+            }
+        );
+
+
+        // ========================================
+        // CEK JUMLAH PRODUK
+        // ========================================
+
+        if (
+            produk.length !==
+            semuaProduk.length
+        ) {
+
+            return;
+
+        }
+
+
+        if (produk.length === 0) {
+
+            alert(
+                "Minimal harus ada satu produk."
+            );
+
+            return;
+
+        }
+
+
+        // ========================================
+        // DATA YANG DIKIRIM
+        // ========================================
+
+        const data = {
+
+            tanggal: tanggal,
+
+            catatan: catatan,
+
+            produk: produk
+
+        };
+
+
+        // ========================================
+        // LIHAT DATA SEBELUM DIKIRIM
+        // ========================================
+
+        console.log(
+            "Data yang dikirim ke Google Sheets:",
+            data
+        );
+
+
+        // ========================================
+        // NONAKTIFKAN TOMBOL
+        // ========================================
+
+        tombolSimpan.disabled = true;
+
+        tombolSimpan.textContent =
+            "Menyimpan...";
+
+
+        // ========================================
+        // KIRIM KE GOOGLE APPS SCRIPT
+        // ========================================
+
+        try {
+
+            // Jeda 2 detik
+            await new Promise(
+                function(resolve) {
+
+                    setTimeout(
+                        resolve,
+                        2000
+                    );
 
                 }
             );
 
 
-            // ========================================
-            // DATA YANG DIKIRIM
-            // ========================================
+            const response =
+                await fetch(
+                    SCRIPT_URL,
+                    {
+                        method: "POST",
 
-            const data = {
-
-                tanggal: tanggal,
-
-                catatan: catatan,
-
-                produk: produk
-
-            };
+                        body:
+                            JSON.stringify(data)
+                    }
+                );
 
 
-            // ========================================
-            // NONAKTIFKAN TOMBOL
-            // ========================================
-
-            tombolSimpan.disabled = true;
-
-            tombolSimpan.textContent =
-                "Menyimpan...";
+            const result =
+                await response.json();
 
 
             // ========================================
-            // KIRIM KE GOOGLE APPS SCRIPT
+            // HASIL DARI GOOGLE APPS SCRIPT
             // ========================================
 
-            try {
+            if (
+                result.status ===
+                "success"
+            ) {
 
-                // Jeda 
-                await new Promise(
-                    function(resolve) {
+                alert(
+                    "Data berhasil disimpan!"
+                );
 
-                        setTimeout(
-                            resolve,
-                            1000
-                        );
+
+                // ========================================
+                // RESET FORM
+                // ========================================
+
+                form.reset();
+
+
+                // ========================================
+                // HAPUS PRODUK TAMBAHAN
+                // ========================================
+
+                const semuaProdukSetelahReset =
+                    document.querySelectorAll(
+                        ".produk-item"
+                    );
+
+
+                semuaProdukSetelahReset.forEach(
+                    function(item, index) {
+
+                        // Produk pertama dipertahankan
+                        if (index > 0) {
+
+                            item.remove();
+
+                        }
 
                     }
                 );
 
 
-                const response =
-                    await fetch(
-                        SCRIPT_URL,
-                        {
-                            method: "POST",
+                // ========================================
+                // RESET SUBTOTAL PRODUK PERTAMA
+                // ========================================
 
-                            body:
-                                JSON.stringify(data)
-                        }
+                const produkPertamaSetelahReset =
+                    document.querySelector(
+                        ".produk-item"
                     );
-
-
-                const result =
-                    await response.json();
 
 
                 if (
-                    result.status ===
-                    "success"
+                    produkPertamaSetelahReset
                 ) {
 
-                    alert(
-                        "Data berhasil disimpan!"
-                    );
-
-
-                    document
-                        .getElementById(
-                            "penjualanForm"
+                    produkPertamaSetelahReset
+                        .querySelector(
+                            ".subtotal strong"
                         )
-                        .reset();
-
-
-                    totalElement.textContent =
+                        .textContent =
                         "Rp 0";
-
-
-                } else {
-
-                    alert(
-                        "Gagal menyimpan data: " +
-                        result.message
-                    );
-
-
-                    console.error(
-                        result
-                    );
 
                 }
 
 
-            } catch (error) {
+                // ========================================
+                // RESET TOTAL
+                // ========================================
 
-                console.error(
-                    error
-                );
+                totalElement.textContent =
+                    "Rp 0";
 
+
+                hitungTotal();
+
+
+            } else {
 
                 alert(
-                    "Terjadi kesalahan saat mengirim data."
+                    "Gagal menyimpan data: " +
+                    result.message
                 );
 
 
-            } finally {
-
-                // ========================================
-                // AKTIFKAN KEMBALI TOMBOL
-                // ========================================
-
-                tombolSimpan.disabled =
-                    false;
-
-
-                tombolSimpan.textContent =
-                    "Simpan Data";
+                console.error(
+                    "Response Google Apps Script:",
+                    result
+                );
 
             }
 
+
+        } catch (error) {
+
+            console.error(
+                "Error:",
+                error
+            );
+
+
+            alert(
+                "Terjadi kesalahan saat mengirim data."
+            );
+
+
+        } finally {
+
+            // ========================================
+            // AKTIFKAN KEMBALI TOMBOL
+            // ========================================
+
+            tombolSimpan.disabled =
+                false;
+
+
+            tombolSimpan.textContent =
+                "Simpan Data";
+
         }
-    );
+
+    }
+);
 
 
 // ========================================
