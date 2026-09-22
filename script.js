@@ -22,17 +22,23 @@ const totalElement =
 const form =
     document.getElementById("penjualanForm");
 
-
-// ========================================
-// TANGGAL HARI INI
-// ========================================
-
 const tanggalInput =
     document.getElementById("tanggal");
 
 const tanggalHariIni =
     document.getElementById("tanggalHariIni");
 
+
+// ========================================
+// DATA MASTER PRODUK
+// ========================================
+
+let daftarProduk = [];
+
+
+// ========================================
+// TANGGAL HARI INI
+// ========================================
 
 tanggalHariIni.addEventListener(
     "click",
@@ -79,6 +85,337 @@ function formatRupiah(angka) {
 
 
 // ========================================
+// AMBIL DATA PRODUK DARI GOOGLE SHEETS
+// ========================================
+
+async function ambilProduk() {
+
+    try {
+
+        const response =
+            await fetch(SCRIPT_URL);
+
+        const result =
+            await response.json();
+
+
+        if (
+            result.status !== "success"
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Gagal mengambil data produk."
+            );
+
+        }
+
+
+        daftarProduk =
+            result.produk || [];
+
+
+        isiSemuaDropdownProduk();
+
+
+    } catch (error) {
+
+        console.error(
+            "Gagal mengambil data produk:",
+            error
+        );
+
+
+        alert(
+            "Data produk tidak dapat dimuat. " +
+            "Pastikan Google Apps Script dapat diakses."
+        );
+
+    }
+
+}
+
+
+// ========================================
+// ISI DROPDOWN SEMUA PRODUK
+// ========================================
+
+function isiSemuaDropdownProduk() {
+
+    const semuaDropdown =
+        document.querySelectorAll(
+            ".nama-produk"
+        );
+
+
+    semuaDropdown.forEach(
+        function(dropdown) {
+
+            isiDropdownProduk(dropdown);
+
+        }
+    );
+
+}
+
+
+// ========================================
+// ISI SATU DROPDOWN PRODUK
+// ========================================
+
+function isiDropdownProduk(dropdown) {
+
+    dropdown.innerHTML = "";
+
+
+    // Pilihan awal
+
+    const optionAwal =
+        document.createElement("option");
+
+    optionAwal.value = "";
+
+    optionAwal.textContent =
+        "Pilih produk";
+
+    dropdown.appendChild(
+        optionAwal
+    );
+
+
+    // Daftar produk
+
+    daftarProduk.forEach(
+        function(item) {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                item.nama;
+
+            option.textContent =
+                item.nama;
+
+            dropdown.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+// ========================================
+// CARI DATA PRODUK
+// ========================================
+
+function cariProduk(namaProduk) {
+
+    return daftarProduk.find(
+        function(item) {
+
+            return (
+                item.nama.toString().trim() ===
+                namaProduk.toString().trim()
+            );
+
+        }
+    );
+
+}
+
+
+// ========================================
+// UPDATE HARGA DAN STOK
+// ========================================
+
+function updateDataProduk(produkItem) {
+
+    const dropdown =
+        produkItem.querySelector(
+            ".nama-produk"
+        );
+
+    const harga =
+        produkItem.querySelector(
+            ".harga-produk"
+        );
+
+    const stok =
+        produkItem.querySelector(
+            ".stok-produk"
+        );
+
+    const jumlah =
+        produkItem.querySelector(
+            ".jumlah-produk"
+        );
+
+
+    const namaProduk =
+        dropdown.value;
+
+
+    // Jika belum memilih produk
+
+    if (!namaProduk) {
+
+        harga.value = "";
+
+        stok.value = "";
+
+        jumlah.max = "";
+
+        hitungTotal();
+
+        return;
+
+    }
+
+
+    // Cari produk
+
+    const dataProduk =
+        cariProduk(namaProduk);
+
+
+    if (!dataProduk) {
+
+        harga.value = "";
+
+        stok.value = "";
+
+        jumlah.max = "";
+
+        hitungTotal();
+
+        return;
+
+    }
+
+
+    // Tampilkan harga
+
+    harga.value =
+        dataProduk.hargaJual;
+
+
+    // Tampilkan stok
+
+    stok.value =
+        dataProduk.stok;
+
+
+    // Batasi jumlah sesuai stok
+
+    jumlah.max =
+        dataProduk.stok;
+
+
+    // Jika jumlah sekarang lebih besar dari stok
+
+    if (
+        Number(jumlah.value) >
+        Number(dataProduk.stok)
+    ) {
+
+        jumlah.value =
+            dataProduk.stok;
+
+    }
+
+
+    hitungTotal();
+
+}
+
+
+// ========================================
+// CEK JUMLAH TERJUAL
+// ========================================
+
+function cekJumlahProduk(produkItem) {
+
+    const dropdown =
+        produkItem.querySelector(
+            ".nama-produk"
+        );
+
+    const jumlahInput =
+        produkItem.querySelector(
+            ".jumlah-produk"
+        );
+
+    const stokInput =
+        produkItem.querySelector(
+            ".stok-produk"
+        );
+
+
+    const namaProduk =
+        dropdown.value;
+
+    const jumlah =
+        Number(jumlahInput.value) || 0;
+
+    const stok =
+        Number(stokInput.value) || 0;
+
+
+    if (!namaProduk) {
+
+        return true;
+
+    }
+
+
+    if (jumlah <= 0) {
+
+        alert(
+            "Jumlah terjual harus lebih dari 0."
+        );
+
+        jumlahInput.focus();
+
+        return false;
+
+    }
+
+
+    if (jumlah > stok) {
+
+        alert(
+            "Jumlah terjual produk \"" +
+            namaProduk +
+            "\" melebihi stok yang tersedia.\n\n" +
+
+            "Stok tersedia: " +
+            stok +
+
+            "\nJumlah terjual: " +
+            jumlah
+        );
+
+        jumlahInput.value =
+            stok;
+
+        hitungTotal();
+
+        jumlahInput.focus();
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+// ========================================
 // HITUNG TOTAL
 // ========================================
 
@@ -89,27 +426,32 @@ function hitungTotal() {
             ".produk-item"
         );
 
+
     let total = 0;
 
 
     semuaProduk.forEach(
         function(produk) {
 
+            const hargaInput =
+                produk.querySelector(
+                    ".harga-produk"
+                );
+
+            const jumlahInput =
+                produk.querySelector(
+                    ".jumlah-produk"
+                );
+
             const harga =
                 Number(
-                    produk.querySelector(
-                        ".harga-produk"
-                    ).value
+                    hargaInput.value
                 ) || 0;
-
 
             const jumlah =
                 Number(
-                    produk.querySelector(
-                        ".jumlah-produk"
-                    ).value
+                    jumlahInput.value
                 ) || 0;
-
 
             const subtotal =
                 harga * jumlah;
@@ -147,9 +489,9 @@ function hitungTotal() {
 
 function pasangEvent(produk) {
 
-    const harga =
+    const dropdown =
         produk.querySelector(
-            ".harga-produk"
+            ".nama-produk"
         );
 
     const jumlah =
@@ -163,17 +505,43 @@ function pasangEvent(produk) {
         );
 
 
-    harga.addEventListener(
-        "input",
-        hitungTotal
+    // ========================================
+    // PILIH PRODUK
+    // ========================================
+
+    dropdown.addEventListener(
+        "change",
+        function() {
+
+            updateDataProduk(
+                produk
+            );
+
+        }
     );
 
+
+    // ========================================
+    // JUMLAH TERJUAL
+    // ========================================
 
     jumlah.addEventListener(
         "input",
-        hitungTotal
+        function() {
+
+            cekJumlahProduk(
+                produk
+            );
+
+            hitungTotal();
+
+        }
     );
 
+
+    // ========================================
+    // HAPUS PRODUK
+    // ========================================
 
     hapus.addEventListener(
         "click",
@@ -185,8 +553,11 @@ function pasangEvent(produk) {
                 );
 
 
-            // Jangan biarkan semua produk terhapus
-            if (semuaProduk.length <= 1) {
+            // Minimal satu produk
+
+            if (
+                semuaProduk.length <= 1
+            ) {
 
                 alert(
                     "Minimal harus ada satu produk."
@@ -225,27 +596,36 @@ function buatProduk() {
 
         <div class="form-group">
 
-            <label>Nama Produk</label>
+            <label>
+                Nama Produk
+            </label>
 
-            <input
-                type="text"
+            <select
                 class="nama-produk"
-                placeholder="Masukkan nama barang"
                 required
             >
+
+                <option value="">
+                    Pilih produk
+                </option>
+
+            </select>
 
         </div>
 
 
         <div class="form-group">
 
-            <label>Harga Satuan (Rp)</label>
+            <label>
+                Harga Satuan (Rp)
+            </label>
 
             <input
                 type="number"
                 class="harga-produk"
-                placeholder="Masukkan nominal"
+                placeholder="Harga otomatis"
                 min="0"
+                readonly
                 required
             >
 
@@ -254,12 +634,31 @@ function buatProduk() {
 
         <div class="form-group">
 
-            <label>Jumlah Terjual</label>
+            <label>
+                Stok Tersedia
+            </label>
+
+            <input
+                type="number"
+                class="stok-produk"
+                placeholder="Stok otomatis"
+                min="0"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Jumlah Terjual
+            </label>
 
             <input
                 type="number"
                 class="jumlah-produk"
-                placeholder="Contoh: 3"
+                placeholder="Masukkan jumlah barang"
                 min="1"
                 value="1"
                 required
@@ -272,7 +671,9 @@ function buatProduk() {
 
             Subtotal
 
-            <strong>Rp 0</strong>
+            <strong>
+                Rp 0
+            </strong>
 
         </div>
 
@@ -287,9 +688,29 @@ function buatProduk() {
     `;
 
 
-    container.appendChild(produk);
+    container.appendChild(
+        produk
+    );
 
-    pasangEvent(produk);
+
+    // Isi dropdown
+
+    const dropdown =
+        produk.querySelector(
+            ".nama-produk"
+        );
+
+    isiDropdownProduk(
+        dropdown
+    );
+
+
+    // Pasang event
+
+    pasangEvent(
+        produk
+    );
+
 
     hitungTotal();
 
@@ -322,7 +743,23 @@ const produkPertama =
 
 if (produkPertama) {
 
-    pasangEvent(produkPertama);
+    // Isi dropdown pertama
+
+    const dropdown =
+        produkPertama.querySelector(
+            ".nama-produk"
+        );
+
+    isiDropdownProduk(
+        dropdown
+    );
+
+
+    // Pasang event
+
+    pasangEvent(
+        produkPertama
+    );
 
 }
 
@@ -348,7 +785,9 @@ form.addEventListener(
             );
 
 
-        if (tombolSimpan.disabled) {
+        if (
+            tombolSimpan.disabled
+        ) {
 
             return;
 
@@ -356,17 +795,11 @@ form.addEventListener(
 
 
         // ========================================
-        // AMBIL DATA FORM
+        // TANGGAL
         // ========================================
 
         const tanggal =
             tanggalInput.value;
-
-
-        const catatan =
-            document.getElementById(
-                "catatan"
-            ).value;
 
 
         if (!tanggal) {
@@ -381,7 +814,17 @@ form.addEventListener(
 
 
         // ========================================
-        // AMBIL SEMUA PRODUK
+        // CATATAN
+        // ========================================
+
+        const catatan =
+            document.getElementById(
+                "catatan"
+            ).value;
+
+
+        // ========================================
+        // SEMUA PRODUK
         // ========================================
 
         const semuaProduk =
@@ -393,116 +836,169 @@ form.addEventListener(
         const produk = [];
 
 
-        semuaProduk.forEach(
-            function(item, index) {
-
-                const namaInput =
-                    item.querySelector(
-                        ".nama-produk"
-                    );
-
-                const hargaInput =
-                    item.querySelector(
-                        ".harga-produk"
-                    );
-
-                const jumlahInput =
-                    item.querySelector(
-                        ".jumlah-produk"
-                    );
-
-
-                const nama =
-                    namaInput.value.trim();
-
-
-                const harga =
-                    Number(
-                        hargaInput.value
-                    ) || 0;
-
-
-                const jumlah =
-                    Number(
-                        jumlahInput.value
-                    ) || 0;
-
-
-                const total =
-                    harga * jumlah;
-
-
-                // ========================================
-                // CEK NAMA PRODUK
-                // ========================================
-
-                if (!nama) {
-
-                    alert(
-                        "Nama produk ke-" +
-                        (index + 1) +
-                        " belum diisi."
-                    );
-
-                    namaInput.focus();
-
-                    return;
-
-                }
-
-
-                // ========================================
-                // MASUKKAN DATA PRODUK
-                // ========================================
-
-                produk.push({
-
-                    nama: nama,
-
-                    harga: harga,
-
-                    jumlah: jumlah,
-
-                    total: total
-
-                });
-
-
-                // ========================================
-                // DEBUG
-                // ========================================
-
-                console.log(
-                    "Produk ke-" +
-                    (index + 1) +
-                    ":",
-                    {
-                        nama: nama,
-                        harga: harga,
-                        jumlah: jumlah,
-                        total: total
-                    }
-                );
-
-            }
-        );
-
-
         // ========================================
-        // CEK JUMLAH PRODUK
+        // VALIDASI PRODUK
         // ========================================
 
-        if (
-            produk.length !==
-            semuaProduk.length
+        for (
+            let index = 0;
+            index < semuaProduk.length;
+            index++
         ) {
 
-            return;
+            const item =
+                semuaProduk[index];
+
+
+            const namaInput =
+                item.querySelector(
+                    ".nama-produk"
+                );
+
+            const hargaInput =
+                item.querySelector(
+                    ".harga-produk"
+                );
+
+            const jumlahInput =
+                item.querySelector(
+                    ".jumlah-produk"
+                );
+
+            const stokInput =
+                item.querySelector(
+                    ".stok-produk"
+                );
+
+
+            const nama =
+                namaInput.value.trim();
+
+
+            const harga =
+                Number(
+                    hargaInput.value
+                ) || 0;
+
+
+            const jumlah =
+                Number(
+                    jumlahInput.value
+                ) || 0;
+
+
+            const stok =
+                Number(
+                    stokInput.value
+                ) || 0;
+
+
+            // ========================================
+            // CEK PRODUK
+            // ========================================
+
+            if (!nama) {
+
+                alert(
+                    "Silakan pilih produk ke-" +
+                    (index + 1) +
+                    "."
+                );
+
+                namaInput.focus();
+
+                return;
+
+            }
+
+
+            // ========================================
+            // CEK HARGA
+            // ========================================
+
+            if (harga <= 0) {
+
+                alert(
+                    "Harga produk ke-" +
+                    (index + 1) +
+                    " tidak valid."
+                );
+
+                return;
+
+            }
+
+
+            // ========================================
+            // CEK JUMLAH
+            // ========================================
+
+            if (jumlah <= 0) {
+
+                alert(
+                    "Jumlah terjual produk ke-" +
+                    (index + 1) +
+                    " harus lebih dari 0."
+                );
+
+                jumlahInput.focus();
+
+                return;
+
+            }
+
+
+            // ========================================
+            // CEK STOK
+            // ========================================
+
+            if (jumlah > stok) {
+
+                alert(
+                    "Jumlah terjual produk \"" +
+                    nama +
+                    "\" melebihi stok yang tersedia.\n\n" +
+
+                    "Stok tersedia: " +
+                    stok +
+
+                    "\nJumlah terjual: " +
+                    jumlah
+                );
+
+                jumlahInput.focus();
+
+                return;
+
+            }
+
+
+            // ========================================
+            // MASUKKAN DATA
+            // ========================================
+
+            produk.push({
+
+                nama: nama,
+
+                harga: harga,
+
+                jumlah: jumlah,
+
+                total: harga * jumlah
+
+            });
 
         }
 
 
-        if (produk.length === 0) {
+        // ========================================
+        // CEK PRODUK
+        // ========================================
+
+        if (
+            produk.length === 0
+        ) {
 
             alert(
                 "Minimal harus ada satu produk."
@@ -528,10 +1024,6 @@ form.addEventListener(
         };
 
 
-        // ========================================
-        // LIHAT DATA SEBELUM DIKIRIM
-        // ========================================
-
         console.log(
             "Data yang dikirim ke Google Sheets:",
             data
@@ -542,19 +1034,21 @@ form.addEventListener(
         // NONAKTIFKAN TOMBOL
         // ========================================
 
-        tombolSimpan.disabled = true;
+        tombolSimpan.disabled =
+            true;
 
         tombolSimpan.textContent =
             "Menyimpan...";
 
 
         // ========================================
-        // KIRIM KE GOOGLE APPS SCRIPT
+        // KIRIM DATA
         // ========================================
 
         try {
 
             // Jeda 2 detik
+
             await new Promise(
                 function(resolve) {
 
@@ -584,12 +1078,11 @@ form.addEventListener(
 
 
             // ========================================
-            // HASIL DARI GOOGLE APPS SCRIPT
+            // HASIL
             // ========================================
 
             if (
-                result.status ===
-                "success"
+                result.status === "success"
             ) {
 
                 alert(
@@ -617,8 +1110,9 @@ form.addEventListener(
                 semuaProdukSetelahReset.forEach(
                     function(item, index) {
 
-                        // Produk pertama dipertahankan
-                        if (index > 0) {
+                        if (
+                            index > 0
+                        ) {
 
                             item.remove();
 
@@ -629,7 +1123,7 @@ form.addEventListener(
 
 
                 // ========================================
-                // RESET SUBTOTAL PRODUK PERTAMA
+                // RESET PRODUK PERTAMA
                 // ========================================
 
                 const produkPertamaSetelahReset =
@@ -642,11 +1136,56 @@ form.addEventListener(
                     produkPertamaSetelahReset
                 ) {
 
-                    produkPertamaSetelahReset
-                        .querySelector(
-                            ".subtotal strong"
-                        )
-                        .textContent =
+                    const dropdown =
+                        produkPertamaSetelahReset
+                            .querySelector(
+                                ".nama-produk"
+                            );
+
+                    const harga =
+                        produkPertamaSetelahReset
+                            .querySelector(
+                                ".harga-produk"
+                            );
+
+                    const stok =
+                        produkPertamaSetelahReset
+                            .querySelector(
+                                ".stok-produk"
+                            );
+
+                    const jumlah =
+                        produkPertamaSetelahReset
+                            .querySelector(
+                                ".jumlah-produk"
+                            );
+
+                    const subtotal =
+                        produkPertamaSetelahReset
+                            .querySelector(
+                                ".subtotal strong"
+                            );
+
+
+                    // Isi ulang dropdown
+
+                    isiDropdownProduk(
+                        dropdown
+                    );
+
+
+                    // Reset data
+
+                    harga.value = "";
+
+                    stok.value = "";
+
+                    jumlah.value = 1;
+
+                    jumlah.max = "";
+
+
+                    subtotal.textContent =
                         "Rp 0";
 
                 }
@@ -661,6 +1200,13 @@ form.addEventListener(
 
 
                 hitungTotal();
+
+
+                // ========================================
+                // REFRESH DATA STOK
+                // ========================================
+
+                await ambilProduk();
 
 
             } else {
@@ -701,7 +1247,6 @@ form.addEventListener(
             tombolSimpan.disabled =
                 false;
 
-
             tombolSimpan.textContent =
                 "Simpan Data";
 
@@ -716,3 +1261,10 @@ form.addEventListener(
 // ========================================
 
 hitungTotal();
+
+
+// ========================================
+// AMBIL PRODUK SAAT HALAMAN DIBUKA
+// ========================================
+
+ambilProduk();
