@@ -1272,9 +1272,10 @@ form.addEventListener(
             await new Promise(
                 function(resolve) {
 
-                    setTimeout(() => {
-                    // proses kirim data
-                    }, 1000);
+                    setTimeout(
+                        resolve,
+                        1000
+                    );
 
                 }
             );
