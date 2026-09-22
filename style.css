@@ -186,3 +186,63 @@ button {
 .login-container {
     max-width: 450px;
 }
+/* ========================================
+   PENCARIAN PRODUK
+======================================== */
+
+.pencarian-produk {
+    position: relative;
+}
+
+
+.cari-produk {
+    width: 100%;
+}
+
+
+.hasil-produk {
+    display: none;
+
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    background: white;
+
+    border: 1px solid #ccc;
+
+    border-top: none;
+
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+}
+
+
+.pilihan-produk {
+    padding: 12px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid #eee;
+
+    background: white;
+}
+
+
+.pilihan-produk:hover {
+    background: #f0f0f0;
+}
+
+
+.produk-tidak-ditemukan {
+    padding: 12px;
+
+    color: #777;
+
+    background: white;
+}
