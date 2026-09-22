@@ -2,17 +2,31 @@
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Pendataan Penjualan</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- CEK LOGIN -->
+
+    <!-- ========================================
+         CEK LOGIN
+    ======================================== -->
+
     <script>
 
         if (
@@ -28,14 +42,21 @@
 
     <div class="container">
 
-        <h1>Pendataan Penjualan</h1>
+
+        <h1>
+            Pendataan Penjualan
+        </h1>
+
 
         <p class="subtitle">
             Catat produk yang terjual dan uang yang masuk
         </p>
 
 
-        <!-- LOGOUT -->
+        <!-- ========================================
+             LOGOUT
+        ======================================== -->
+
         <button
             type="button"
             id="logoutButton"
@@ -58,11 +79,13 @@
                     Tanggal Transaksi
                 </label>
 
+
                 <input
                     type="date"
                     id="tanggal"
                     required
                 >
+
 
                 <button
                     type="button"
@@ -79,7 +102,10 @@
                  PRODUK TERJUAL
             ======================================== -->
 
-            <h2>Produk Terjual</h2>
+            <h2>
+                Produk Terjual
+            </h2>
+
 
             <div id="produk-container">
 
@@ -99,16 +125,36 @@
                             Nama Produk
                         </label>
 
-                        <select
+
+                        <div class="pencarian-produk">
+
+                            <input
+                                type="text"
+                                class="cari-produk"
+                                placeholder="Ketik untuk mencari produk..."
+                                autocomplete="off"
+                                required
+                            >
+
+
+                            <div
+                                class="hasil-produk"
+                            ></div>
+
+
+                        </div>
+
+
+                        <!--
+                            Nilai sebenarnya yang dikirim
+                            ke Apps Script
+                        -->
+
+                        <input
+                            type="hidden"
                             class="nama-produk"
                             required
                         >
-
-                            <option value="">
-                                Memuat produk...
-                            </option>
-
-                        </select>
 
                     </div>
 
@@ -120,6 +166,7 @@
                         <label>
                             Harga Satuan (Rp)
                         </label>
+
 
                         <input
                             type="number"
@@ -141,6 +188,7 @@
                             Stok Tersedia
                         </label>
 
+
                         <input
                             type="number"
                             class="stok-produk"
@@ -160,6 +208,7 @@
                             Jumlah Terjual
                         </label>
 
+
                         <input
                             type="number"
                             class="jumlah-produk"
@@ -176,7 +225,10 @@
 
                     <div class="subtotal">
 
-                        Subtotal
+                        <span>
+                            Subtotal
+                        </span>
+
 
                         <strong>
                             Rp 0
@@ -193,6 +245,7 @@
                     >
                         Hapus Produk
                     </button>
+
 
                 </div>
 
@@ -213,7 +266,7 @@
 
 
             <!-- ========================================
-                 TOTAL UANG MASUK
+                 TOTAL
             ======================================== -->
 
             <div class="total-box">
@@ -221,6 +274,7 @@
                 <span>
                     Total Uang Masuk
                 </span>
+
 
                 <strong id="total">
                     Rp 0
@@ -239,6 +293,7 @@
                     Catatan
                 </label>
 
+
                 <textarea
                     id="catatan"
                     placeholder="Catatan tambahan (opsional)"
@@ -248,7 +303,7 @@
 
 
             <!-- ========================================
-                 SIMPAN DATA
+                 SIMPAN
             ======================================== -->
 
             <button
@@ -261,15 +316,20 @@
 
         </form>
 
+
     </div>
 
 
-    <!-- JAVASCRIPT UTAMA -->
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
 
     <script src="script.js"></script>
 
 
-    <!-- LOGOUT -->
+    <!-- ========================================
+         LOGOUT
+    ======================================== -->
 
     <script>
 
@@ -290,6 +350,7 @@
             );
 
     </script>
+
 
 </body>
 
