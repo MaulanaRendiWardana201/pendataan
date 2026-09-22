@@ -12,30 +12,46 @@
 
 <body>
 
+    <!-- CEK LOGIN -->
     <script>
 
         if (
             sessionStorage.getItem("sudahLogin") !== "true"
         ) {
+
             window.location.href = "login.html";
+
         }
 
     </script>
+
+
     <div class="container">
 
         <h1>Pendataan Penjualan</h1>
+
         <p class="subtitle">
             Catat produk yang terjual dan uang yang masuk
         </p>
-        
+
+
+        <!-- LOGOUT -->
         <button
-        type="button"
-        id="logoutButton"
-        class="btn-tanggal">Keluar</button>
-        
+            type="button"
+            id="logoutButton"
+            class="btn-tanggal"
+        >
+            Keluar
+        </button>
+
+
         <form id="penjualanForm">
 
-            <!-- Tanggal -->
+
+            <!-- ========================================
+                 TANGGAL TRANSAKSI
+            ======================================== -->
+
             <div class="form-group">
 
                 <label for="tanggal">
@@ -59,51 +75,95 @@
             </div>
 
 
-            <!-- Daftar Produk -->
+            <!-- ========================================
+                 PRODUK TERJUAL
+            ======================================== -->
+
             <h2>Produk Terjual</h2>
 
             <div id="produk-container">
 
-                <!-- Produk pertama -->
+
+                <!-- ====================================
+                     PRODUK PERTAMA
+                ==================================== -->
+
                 <div class="produk-item">
+
+
+                    <!-- NAMA PRODUK -->
 
                     <div class="form-group">
 
-                        <label>Nama Produk</label>
+                        <label>
+                            Nama Produk
+                        </label>
 
-                        <input
-                            type="text"
+                        <select
                             class="nama-produk"
-                            placeholder="masukan nama barang"
                             required
                         >
+
+                            <option value="">
+                                Memuat produk...
+                            </option>
+
+                        </select>
 
                     </div>
 
 
+                    <!-- HARGA JUAL -->
+
                     <div class="form-group">
 
-                        <label>Harga Satuan (Rp)</label>
+                        <label>
+                            Harga Satuan (Rp)
+                        </label>
 
                         <input
                             type="number"
                             class="harga-produk"
-                            placeholder="masukan nominal"
+                            placeholder="Harga otomatis"
                             min="0"
+                            readonly
                             required
                         >
 
                     </div>
 
 
+                    <!-- STOK -->
+
                     <div class="form-group">
 
-                        <label>Jumlah Terjual</label>
+                        <label>
+                            Stok Tersedia
+                        </label>
+
+                        <input
+                            type="number"
+                            class="stok-produk"
+                            placeholder="Stok otomatis"
+                            min="0"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- JUMLAH TERJUAL -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Jumlah Terjual
+                        </label>
 
                         <input
                             type="number"
                             class="jumlah-produk"
-                            placeholder="masukan jumlah barang"
+                            placeholder="Masukkan jumlah barang"
                             min="1"
                             value="1"
                             required
@@ -112,14 +172,20 @@
                     </div>
 
 
+                    <!-- SUBTOTAL -->
+
                     <div class="subtotal">
 
                         Subtotal
 
-                        <strong>Rp 0</strong>
+                        <strong>
+                            Rp 0
+                        </strong>
 
                     </div>
 
+
+                    <!-- HAPUS -->
 
                     <button
                         type="button"
@@ -133,7 +199,10 @@
             </div>
 
 
-            <!-- Tambah Produk -->
+            <!-- ========================================
+                 TAMBAH PRODUK
+            ======================================== -->
+
             <button
                 type="button"
                 id="tambahProduk"
@@ -143,10 +212,15 @@
             </button>
 
 
-            <!-- Total -->
+            <!-- ========================================
+                 TOTAL UANG MASUK
+            ======================================== -->
+
             <div class="total-box">
 
-                <span>Total Uang Masuk</span>
+                <span>
+                    Total Uang Masuk
+                </span>
 
                 <strong id="total">
                     Rp 0
@@ -155,7 +229,10 @@
             </div>
 
 
-            <!-- Catatan -->
+            <!-- ========================================
+                 CATATAN
+            ======================================== -->
+
             <div class="form-group">
 
                 <label for="catatan">
@@ -170,7 +247,10 @@
             </div>
 
 
-            <!-- Simpan -->
+            <!-- ========================================
+                 SIMPAN DATA
+            ======================================== -->
+
             <button
                 type="submit"
                 class="btn-simpan"
@@ -178,27 +258,39 @@
                 Simpan Data
             </button>
 
+
         </form>
 
     </div>
 
 
+    <!-- JAVASCRIPT UTAMA -->
+
     <script src="script.js"></script>
+
+
+    <!-- LOGOUT -->
 
     <script>
 
-    document
-        .getElementById("logoutButton")
-        .addEventListener("click", function() {
+        document
+            .getElementById("logoutButton")
+            .addEventListener(
+                "click",
+                function() {
 
-            sessionStorage.removeItem("sudahLogin");
+                    sessionStorage.removeItem(
+                        "sudahLogin"
+                    );
 
-            window.location.href =
-                "login.html";
+                    window.location.href =
+                        "login.html";
 
-        });
+                }
+            );
 
     </script>
+
 </body>
 
 </html>
